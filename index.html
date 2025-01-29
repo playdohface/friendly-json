@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>JSON Form Builder</title>
+  <style>
+    .form-container {
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .field-group {
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .array-container {
+      margin-left: 20px;
+      border-left: 2px solid #ccc;
+      padding-left: 10px;
+    }
+
+    .array-item {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .remove-btn {
+      color: red;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .add-btn {
+      color: green;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      margin-bottom: 10px;
+      padding: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="form-container" id="formContainer"></div>
+
+  <script>
+    function createForm(data, container) {
+      container.innerHTML = '';
+      buildForm(data, container);
+    }
+
+    function buildForm(data, container, path = '') {
+      Object.keys(data).forEach(key => {
+        const value = data[key];
+        const fieldWrapper = document.createElement('div');
+        fieldWrapper.className = 'field-group';
+
+        if (Array.isArray(value)) {
+          renderArrayField(key, value, fieldWrapper, path);
+        } else if (typeof value === 'object' && value !== null) {
+          renderObjectField(key, value, fieldWrapper, path);
+        } else {
+          renderPrimitiveField(key, value, fieldWrapper, path, data);
+        }
+
+        container.appendChild(fieldWrapper);
+      });
+    }
+
+    function renderArrayField(key, array, container, path) {
+      const currentPath = path ? `${path}.${key}` : key;
+      const title = document.createElement('div');
+      title.innerHTML = `<strong>${key}:</strong> (Array)`;
+      container.appendChild(title);
+
+      const arrayContainer = document.createElement('div');
+      arrayContainer.className = 'array-container';
+      container.appendChild(arrayContainer);
+
+      // Render existing array items
+      array.forEach((item, index) => {
+        renderArrayItem(item, index, array, arrayContainer, currentPath);
+      });
+
+      // Add button
+      const addButton = document.createElement('span');
+      addButton.className = 'add-btn';
+      addButton.textContent = 'Add Item';
+      addButton.onclick = () => {
+        const newItem = array.length > 0
+          ? clone(array[0])
+          : createDefaultItem(array);
+        array.push(newItem);
+        renderArrayItem(newItem, array.length - 1, array, arrayContainer, currentPath);
+      };
+      container.appendChild(addButton);
+    }
+
+    function renderArrayItem(item, index, array, container, path) {
+      const itemWrapper = document.createElement('div');
+      itemWrapper.className = 'array-item';
+
+      const removeButton = document.createElement('span');
+      removeButton.className = 'remove-btn';
+      removeButton.textContent = 'Remove';
+      removeButton.onclick = () => {
+        array.splice(index, 1);
+        container.removeChild(itemWrapper);
+      };
+
+      const itemContainer = document.createElement('div');
+      if (typeof item === 'object' && item !== null) {
+        buildForm(item, itemContainer, `${path}[${index}]`);
+      } else {
+        const input = createInputForType(item, value => {
+          array[index] = convertType(value, typeof item);
+        });
+        itemContainer.appendChild(input);
+      }
+
+      itemWrapper.appendChild(removeButton);
+      itemWrapper.appendChild(itemContainer);
+      container.appendChild(itemWrapper);
+    }
+
+    function renderObjectField(key, obj, container, path) {
+      const currentPath = path ? `${path}.${key}` : key;
+      const title = document.createElement('div');
+      title.innerHTML = `<strong>${key}:</strong> (Object)`;
+      container.appendChild(title);
+      buildForm(obj, container, currentPath);
+    }
+
+    function renderPrimitiveField(key, value, container, path, parent) {
+      const currentPath = path ? `${path}.${key}` : key;
+      const label = document.createElement('label');
+      label.textContent = `${key}: (${typeof value})`;
+
+      const input = createInputForType(value, newValue => {
+        parent[key] = convertType(newValue, typeof value);
+      });
+
+      container.appendChild(label);
+      container.appendChild(input);
+    }
+
+    function createInputForType(value, onChange) {
+      const type = typeof value;
+      let input;
+
+      if (type === 'boolean') {
+        input = document.createElement('select');
+        const trueOption = document.createElement('option');
+        trueOption.value = 'true';
+        trueOption.text = 'true';
+        const falseOption = document.createElement('option');
+        falseOption.value = 'false';
+        falseOption.text = 'false';
+        input.appendChild(trueOption);
+        input.appendChild(falseOption);
+        input.value = value.toString();
+        input.onchange = () => onChange(input.value === 'true');
+      } else if (type === 'number') {
+        input = document.createElement('input');
+        input.type = 'number';
+        input.value = value;
+        input.oninput = () => onChange(Number(input.value));
+      } else {
+        input = document.createElement('input');
+        input.type = 'text';
+        input.value = value;
+        input.oninput = () => onChange(input.value);
+      }
+
+      return input;
+    }
+
+    function convertType(value, type) {
+      switch (type) {
+        case 'number': return Number(value);
+        case 'boolean': return value === 'true';
+        default: return value;
+      }
+    }
+
+    function clone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function createDefaultItem(array) {
+      if (array.constructor === Array) return null;
+      return typeof array[0] === 'object' ? {} : '';
+    }
+
+    // Example usage
+    const exampleData = {
+      name: "John Doe",
+      age: 30,
+      active: true,
+      hobbies: ["reading", "swimming"],
+      address: {
+        street: "Main St",
+        city: "Anytown"
+      },
+      contacts: [
+        {type: "email", value: "john@example.com"},
+        {type: "phone", value: "123-456-7890"}
+      ]
+    };
+
+    createForm(exampleData, document.getElementById('formContainer'));
+  </script>
+</body>
+
+</html>
