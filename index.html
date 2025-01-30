@@ -39,6 +39,17 @@
       margin-top: 5px;
     }
 
+    .download-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
     label {
       display: block;
       margin-bottom: 5px;
@@ -55,6 +66,7 @@
 
 <body>
   <div class="form-container" id="formContainer"></div>
+  <button class="download-btn" onclick="downloadJson()">Download JSON</button>
 
   <script>
     function createForm(data, container) {
@@ -90,12 +102,10 @@
       arrayContainer.className = 'array-container';
       container.appendChild(arrayContainer);
 
-      // Render existing array items
       array.forEach((item, index) => {
         renderArrayItem(item, index, array, arrayContainer, currentPath);
       });
 
-      // Add button
       const addButton = document.createElement('span');
       addButton.className = 'add-btn';
       addButton.textContent = 'Add Item';
@@ -118,7 +128,13 @@
       removeButton.textContent = 'Remove';
       removeButton.onclick = () => {
         array.splice(index, 1);
-        container.removeChild(itemWrapper);
+        // we re-render the entire array as indices might have changed
+        while (container.hasChildNodes()) {
+          container.removeChild(container.firstChild);
+        }
+        array.forEach((item, index) => {
+          renderArrayItem(item, index, array, container, path)
+        })
       };
 
       const itemContainer = document.createElement('div');
@@ -203,6 +219,19 @@
     function createDefaultItem(array) {
       if (array.constructor === Array) return null;
       return typeof array[0] === 'object' ? {} : '';
+    }
+
+    function downloadJson() {
+      const dataStr = JSON.stringify(exampleData, null, 2);
+      const blob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `form-data-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
     // Example usage
