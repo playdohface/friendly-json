@@ -1,86 +1,239 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.header {
+  text-align: center;
+  padding: 24px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.header h1 {
+  margin: 0;
+  color: #495057;
+  font-size: 32px;
+  font-weight: 500;
+}
+
 .main-container {
   display: flex;
-  gap: 20px;
-  padding: 20px;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+}
+
+.form-container {
+  padding: 16px;
+  flex: 1;
+  max-width: none;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: max-width 0.3s ease;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.form-container {
-  padding: 20px;
-  flex: 1;
-  max-width: 600px;
+.header-buttons {
+  display: flex;
+  gap: 12px;
+}
+.header-buttons button {
+    display: block;
+    margin: 24px auto;
+    padding: 12px 24px;
+
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .header-buttons button:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .download-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.download-btn:hover {
+  background-color: #218838;
+}
+
+.toggle-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.toggle-btn:hover {
+  background-color: #5a6268;
+
 }
 
 .text-box {
   flex: 1;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f9f9f9;
+  padding: 24px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background-color: white;
   min-height: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.textarea-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.copy-btn {
+  background-color: #e9ecef;
+  margin-left: 4px;
+  margin-right: 4px;
+  color: #495057;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+  background-color: #ced4da;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.text-box.hidden {
+  display: none;
 }
 
 .json-textarea {
   width: 100%;
   height: 100%;
   min-height: 380px;
-  font-family: monospace;
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 14px;
   white-space: pre-wrap;
   border: none;
   background: transparent;
   resize: none;
   outline: none;
+  color: #495057;
 }
 
 .field-group {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ddd;
+  margin-bottom: 2px;
+  padding: 2px;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.field-group:hover {
+  border-color: #ced4da;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .array-container {
-  margin-left: 20px;
-  border-left: 2px solid #ccc;
-  padding-left: 10px;
+  margin-left: 12px;
+  border-left: 2px solid #e9ecef;
+  padding-left: 8px;
 }
 
 .array-item {
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
+  padding: 2px;
+  border-radius: 4px;
+  border-bottom: 1px dashed #e9ecef;
 }
 
 .remove-btn {
-  color: red;
+  color: #dc3545;
   cursor: pointer;
-  margin-left: 10px;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  background-color: #dc3545;
+  color: white;
 }
 
 .add-btn {
-  color: green;
+  color: #28a745;
   cursor: pointer;
-  margin-top: 5px;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: all 0.2s ease;
 }
 
-.download-btn {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  background-color: #4caf50;
+.add-btn:hover {
+  background-color: #28a745;
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
+
+
 
 label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 3px;
+  font-weight: 500;
+  color: #495057;
+  font-size: 13px;
 }
 
 input,
 select {
-  margin-bottom: 10px;
-  padding: 5px;
+  width: 95%;
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.form-container textarea {
+  width: 95%;
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  height: 14px;
+  min-height: 14px;
+  resize: vertical;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }

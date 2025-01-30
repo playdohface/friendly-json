@@ -9,13 +9,25 @@
 </head>
 
 <body>
+  <header class="header">
+    <div class="header-content">
+      <h1>Friendly Json Editor</h1>
+      <div class="header-buttons">
+              <button class="toggle-btn" onclick="toggleJsonDisplay()">Hide JSON</button>
+              <button class="download-btn" onclick="downloadJson()">Download</button>
+      </div>
+    </div>
+  </header>
   <div class="main-container">
     <div class="form-container" id="formContainer"></div>
     <div class="text-box" id="jsonDisplay">
+      <div class="textarea-header">
+        <button class="copy-btn" onclick="copyJsonToClipboard()">Copy to Clipboard</button>
+        <button class="copy-btn" onclick="pasteJsonFromClipboard()">Paste from Clipboard</button>
+      </div>
       <textarea id="jsonTextarea" class="json-textarea"></textarea>
     </div>
   </div>
-  <button class="download-btn" onclick="downloadJson()">Download JSON</button>
 
 </body>
 

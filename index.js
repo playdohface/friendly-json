@@ -1,6 +1,34 @@
 function updateJsonDisplay() {
   const textarea = document.getElementById("jsonTextarea");
   textarea.value = JSON.stringify(exampleData, null, 2);
+
+  let errorDisplay = document.getElementById("jsonError");
+  if (!errorDisplay) {
+    errorDisplay = document.createElement("div");
+    errorDisplay.id = "jsonError";
+
+    textarea.parentNode.insertBefore(errorDisplay, textarea);
+  }
+  errorDisplay.style.color = "red";
+  errorDisplay.style.marginBottom = "10px";
+  errorDisplay.style.display = "none";
+
+  textarea.placeholder = "enter JSON here";
+  textarea.oninput = () => {
+    try {
+      if (!textarea.value.trim()) {
+        errorDisplay.style.display = "none";
+        return;
+      }
+      const parsedData = JSON.parse(textarea.value);
+      errorDisplay.style.display = "none";
+      exampleData = parsedData;
+      createForm(exampleData, document.getElementById("formContainer"));
+    } catch (e) {
+      errorDisplay.textContent = `Invalid JSON: ${e.message}`;
+      errorDisplay.style.display = "block";
+    }
+  };
 }
 
 function createForm(data, container) {
@@ -138,10 +166,15 @@ function createInputForType(value, onChange) {
     input.value = value;
     input.oninput = () => onChange(Number(input.value));
   } else {
-    input = document.createElement("input");
-    input.type = "text";
+    input = document.createElement("textarea");
     input.value = value;
-    input.oninput = () => onChange(input.value);
+    input.oninput = () => {
+      onChange(input.value);
+      if (input.value.indexOf("\n") > -1 || input.value.length > 40) {
+        input.style.height = "auto";
+        input.style.height = input.scrollHeight + "px";
+      }
+    };
   }
 
   return input;
@@ -163,8 +196,35 @@ function clone(obj) {
 }
 
 function createDefaultItem(array) {
-  if (array.constructor === Array) return null;
-  return typeof array[0] === "object" ? {} : "";
+  return "";
+}
+
+async function copyJsonToClipboard() {
+  const textarea = document.getElementById("jsonTextarea");
+  const copyBtn = document.querySelector(".copy-btn");
+
+  try {
+    await navigator.clipboard.writeText(textarea.value);
+    const originalText = copyBtn.textContent;
+    copyBtn.textContent = "Copied!";
+    setTimeout(() => {
+      copyBtn.textContent = originalText;
+    }, 2000);
+  } catch (err) {
+    console.error("Failed to copy text: ", err);
+  }
+}
+
+async function pasteJsonFromClipboard() {
+  try {
+    const clipboardText = await navigator.clipboard.readText();
+    const textarea = document.getElementById("jsonTextarea");
+    textarea.value = clipboardText;
+    exampleData = JSON.parse(clipboardText);
+    createForm(exampleData, document.getElementById("formContainer"));
+  } catch (err) {
+    console.error("Failed to paste text:", err);
+  }
 }
 
 function downloadJson() {
@@ -180,20 +240,18 @@ function downloadJson() {
   URL.revokeObjectURL(url);
 }
 
-// Example usage
-const exampleData = {
-  name: "John Doe",
-  age: 30,
-  active: true,
-  hobbies: ["reading", "swimming"],
-  address: {
-    street: "Main St",
-    city: "Anytown",
-  },
-  contacts: [
-    { type: "email", value: "john@example.com" },
-    { type: "phone", value: "123-456-7890" },
-  ],
+function toggleJsonDisplay() {
+  const jsonDisplay = document.getElementById("jsonDisplay");
+  const toggleBtn = document.querySelector(".toggle-btn");
+  const isHidden = jsonDisplay.classList.toggle("hidden");
+  toggleBtn.textContent = isHidden ? "Show JSON" : "Hide JSON";
+}
+
+let exampleData = {
+  instruction: "Paste JSON to begin",
 };
 
 createForm(exampleData, document.getElementById("formContainer"));
+
+const textarea = document.getElementById("jsonTextarea");
+textarea.select();
