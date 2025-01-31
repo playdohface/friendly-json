@@ -2,23 +2,6 @@
 
 A simple, secure, browser-based JSON editor that allows you to edit JSON data through a user-friendly form interface.
 
-## Privacy & Security
-
-- **100% Browser-Based**: All data processing happens entirely in your browser
-- **No External Dependencies**: The only requirement is a modern web browser
-- **Data Never Leaves Your Device**: Your JSON data stays private and is never transmitted anywhere - if you rely on that fact please always verify anyway
-- **No Server Communication**: Zero network requests - everything runs locally
-
-## Features
-
-- Visual form-based JSON editing
-- Real-time JSON validation
-- Support for nested objects and arrays
-- Copy/Paste JSON functionality
-- Download edited JSON
-- Toggle JSON view
-- Responsive design
-
 ## Usage
 
 1. Open `index.html` in your web browser

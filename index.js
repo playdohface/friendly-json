@@ -31,7 +31,7 @@ function handleJsonInput(textarea, errorDisplay) {
       errorDisplay.style.display = "none";
       return;
     }
-    const parsedData = JSON.parse(textarea.value);
+    const parsedData = JSON5.parse(textarea.value);
     errorDisplay.style.display = "none";
     exampleData = parsedData;
     createForm(exampleData, document.getElementById("formContainer"));
@@ -100,19 +100,7 @@ function renderArrayField(key, array, container, path) {
   const addButton = document.createElement("span");
   addButton.className = "add-btn";
   addButton.textContent = "Add Item";
-  addButton.onclick = () => {
-    const newItem =
-      array.length > 0 ? clone(array[0]) : createDefaultItem(array);
-    array.push(newItem);
-    renderArrayItem(
-      newItem,
-      array.length - 1,
-      array,
-      arrayContainer,
-      currentPath
-    );
-    updateJsonDisplay();
-  };
+  addButton.onclick = () => addArrayItem(array, arrayContainer, currentPath);
   container.appendChild(addButton);
 }
 
@@ -161,6 +149,42 @@ function renderPrimitiveField(key, value, container, path, parent) {
  * @param {HTMLElement} container - The container element to render the item in
  * @param {string} path - The current path in the JSON structure
  */
+/**
+ * Removes an item from an array and updates the display
+ * @param {Array} array - The array to remove from
+ * @param {number} index - The index to remove
+ * @param {HTMLElement} container - The container element
+ * @param {string} path - The current path in the JSON structure
+ */
+function removeArrayItem(array, index, container, path) {
+  if (array.length === 1) {
+    // remember the last item we removed in case we need to add one again
+    defaultValues[path] = array[0];
+  }
+  array.splice(index, 1);
+  // re-render the entire array as indices might have changed
+  while (container.hasChildNodes()) {
+    container.removeChild(container.firstChild);
+  }
+  array.forEach((item, index) => {
+    renderArrayItem(item, index, array, container, path);
+  });
+  updateJsonDisplay();
+}
+
+/**
+ * Adds a new item to an array and updates the display
+ * @param {Array} array - The array to add to
+ * @param {HTMLElement} container - The container element
+ * @param {string} path - The current path in the JSON structure
+ */
+function addArrayItem(array, container, path) {
+  const newItem = array.length > 0 ? clone(array[0]) : createDefaultItem(path);
+  array.push(newItem);
+  renderArrayItem(newItem, array.length - 1, array, container, path);
+  updateJsonDisplay();
+}
+
 function renderArrayItem(item, index, array, container, path) {
   const itemWrapper = document.createElement("div");
   itemWrapper.className = "array-item";
@@ -168,16 +192,7 @@ function renderArrayItem(item, index, array, container, path) {
   const removeButton = document.createElement("span");
   removeButton.className = "remove-btn";
   removeButton.textContent = "Remove";
-  removeButton.onclick = () => {
-    array.splice(index, 1);
-    while (container.hasChildNodes()) {
-      container.removeChild(container.firstChild);
-    }
-    array.forEach((item, index) => {
-      renderArrayItem(item, index, array, container, path);
-    });
-    updateJsonDisplay();
-  };
+  removeButton.onclick = () => removeArrayItem(array, index, container, path);
 
   const itemContainer = document.createElement("div");
   if (typeof item === "object" && item !== null) {
@@ -268,8 +283,8 @@ function clone(obj) {
  * @param {Array} array - The array to create a default item for
  * @returns {string} An empty string as the default item
  */
-function createDefaultItem(array) {
-  return "";
+function createDefaultItem(path) {
+  return defaultValues[path] ?? "";
 }
 
 /**
@@ -333,6 +348,8 @@ function toggleJsonDisplay() {
   const isHidden = jsonDisplay.classList.toggle("hidden");
   toggleBtn.textContent = isHidden ? "Show JSON" : "Hide JSON";
 }
+
+const defaultValues = {};
 
 let exampleData = {
   instruction: "Paste JSON to begin",
