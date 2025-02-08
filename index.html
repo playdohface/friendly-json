@@ -1,34 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+    <head>
+        <title>JSON Form Builder</title>
+        <link rel="stylesheet" href="styles.css" />
+        <script src="https://unpkg.com/json5@2/dist/index.min.js"></script>
+        <script src="index.js" type="module" defer></script>
+    </head>
 
-<head>
-  <title>JSON Form Builder</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://unpkg.com/json5@2/dist/index.min.js"></script>
-  <script src="index.js" defer></script>
-</head>
-
-<body>
-  <header class="header">
-    <div class="header-content">
-      <h1>Friendly Json Editor</h1>
-      <div class="header-buttons">
-              <button class="toggle-btn" onclick="toggleJsonDisplay()">Hide JSON</button>
-              <button class="download-btn" onclick="downloadJson()">Download</button>
-      </div>
-    </div>
-  </header>
-  <div class="main-container">
-    <div class="form-container" id="formContainer"></div>
-    <div class="text-box" id="jsonDisplay">
-      <div class="textarea-header">
-        <button class="copy-btn" onclick="copyJsonToClipboard()">Copy to Clipboard</button>
-        <button class="copy-btn" onclick="pasteJsonFromClipboard()">Paste from Clipboard</button>
-      </div>
-      <textarea id="jsonTextarea" class="json-textarea"></textarea>
-    </div>
-  </div>
-
-</body>
-
+    <body>
+        <header class="header">
+            <div class="header-content">
+                <h1>Friendly Json Editor</h1>
+                <div class="header-buttons">
+                    <button class="download-btn" onclick="downloadJson()">
+                        Download
+                    </button>
+                    <button class="copy-btn" onclick="copyJsonToClipboard()">
+                        Copy to Clipboard
+                    </button>
+                    <button class="copy-btn" onclick="pasteJsonFromClipboard()">
+                        Paste
+                    </button>
+                    <button class="toggle-btn" onclick="toggleJsonDisplay()">
+                        Hide JSON
+                    </button>
+                    <button class="theme-btn" onclick="toggleTheme()">
+                      Toggle Theme
+                    </button>
+                </div>
+            </div>
+        </header>
+        <div class="main-container">
+            <div class="form-container" id="formContainer"></div>
+            <div class="text-box" id="jsonDisplay">
+                <div class="textarea-header"></div>
+                <textarea id="jsonTextarea" class="json-textarea"></textarea>
+            </div>
+        </div>
+    </body>
 </html>
